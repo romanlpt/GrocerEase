@@ -1,9 +1,167 @@
-<datalist id="ingredients-list">
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ recipe }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+      margin: 0;
+    }
+
+    nav {
+      background-color: #eee;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.6rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 6px;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 10px 16px;
+      margin-top: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #edit-button {
+      background-color: #0275d8;
+      color: white;
+    }
+
+    #update-button {
+      background-color: #5cb85c;
+      color: white;
+    }
+
+    .remove-button {
+      background-color: #d9534f;
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      th, td {
+        font-size: 0.95rem;
+        padding: 0.5rem;
+      }
+
+      button {
+        width: 100%;
+        margin-top: 8px;
+      }
+    }
+  </style>
+
+  <script>
+    function enableEdit() {
+      const inputs = document.querySelectorAll("input, select");
+      inputs.forEach(input => input.disabled = false);
+      document.getElementById("update-button").style.display = "inline";
+      document.getElementById("edit-button").style.display = "none";
+    }
+
+    function addRow() {
+      const table = document.getElementById("ingredients-body");
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><input name="ingredient" placeholder="Ingrédient" list="ingredients-list"></td>
+        <td><input name="quantity" type="number" placeholder="Quantité"></td>
+        <td><input name="unit" placeholder="Unité" list="units-list"></td>
+        <td><button type="button" class="remove-button" onclick="removeRow(this)">🗑️</button></td>
+      `;
+      table.appendChild(row);
+    }
+
+    function removeRow(btn) {
+      btn.closest("tr").remove();
+    }
+  </script>
+</head>
+<body>
+
+  <nav>
+    <a href="/">➕ Ajouter une recette</a>
+    <a href="/recipes">📚 Liste des recettes</a>
+    <a href="/shopping">🛒 Liste de courses</a>
+  </nav>
+
+  <h1>🍽️ {{ recipe }}</h1>
+
+  <form method="POST" action="/update/{{ recipe }}">
+    <table>
+      <thead>
+        <tr>
+          <th>Ingrédient</th>
+          <th>Quantité</th>
+          <th>Unité</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="ingredients-body">
+        {% for ingredient, quantity, unit in ingredients %}
+        <tr>
+          <td><input name="ingredient" value="{{ ingredient }}" list="ingredients-list" disabled></td>
+          <td><input name="quantity" type="number" value="{{ quantity }}" disabled></td>
+          <td><input name="unit" value="{{ unit }}" list="units-list" disabled></td>
+          <td><button type="button" class="remove-button" onclick="removeRow(this)">🗑️</button></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <button type="button" onclick="addRow()">➕ Ajouter un ingrédient</button><br>
+    <button type="button" id="edit-button" onclick="enableEdit()">✏️ Modifier la recette</button>
+    <button type="submit" id="update-button" style="display: none;">✅ Mettre à jour</button>
+  </form>
+
+  <br>
+  <a href="/recipes">⬅️ Retour aux recettes</a>
+
+  <!-- Datalists à placer ici pour autocomplétion -->
+  <datalist id="ingredients-list">
     {% for ing in all_ingredients %}
       <option value="{{ ing }}">
     {% endfor %}
   </datalist>
-  
+
   <datalist id="units-list">
     <option value="kg">
     <option value="gousses">
@@ -16,77 +174,7 @@
     <option value="L">
     <option value="bouquet">
     <option value="poignée">
-  </datalist>  
+  </datalist>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <nav style="background-color: #eee; padding: 10px;">
-        <a href="/" style="margin-right: 20px;">➕ Ajouter une recette</a>
-        <a href="/recipes" style="margin-right: 20px;">📚 Liste des recettes</a>
-        <a href="/shopping" style="margin-right: 20px;">🛒 Liste de courses</a>
-    </nav>
-    <hr>
-      
-    <title>{{ recipe }}</title>
-    <script>
-      function enableEdit() {
-        const inputs = document.querySelectorAll("input, select");
-        inputs.forEach(input => input.disabled = false);
-        document.getElementById("update-button").style.display = "inline";
-        document.getElementById("edit-button").style.display = "none";
-      }
-
-      function addRow() {
-        const table = document.getElementById("ingredients-body");
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td><input name="ingredient" placeholder="Ingrédient" list="ingredients-list"></td>
-          <td><input name="quantity" type="number" placeholder="Quantité"></td>
-          <td><input name="unit" placeholder="Unité" list="units-list"></td>
-          <td><button type="button" onclick="removeRow(this)">🗑️</button></td>
-        `;
-        table.appendChild(row);
-      }      
-
-      function removeRow(btn) {
-        btn.closest("tr").remove();
-      }
-    </script>
-</head>
-<body>
-    <h1>🍽️ {{ recipe }}</h1>
-
-    <form method="POST" action="/update/{{ recipe }}">
-      <table border="1" cellpadding="5">
-        <thead>
-          <tr>
-            <th>Ingrédient</th>
-            <th>Quantité</th>
-            <th>Unité</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="ingredients-body">
-            {% for ingredient, quantity, unit in ingredients %}
-            <tr>
-              <td><input name="ingredient" value="{{ ingredient }}" list="ingredients-list" disabled></td>
-              <td><input name="quantity" type="number" value="{{ quantity }}" disabled></td>
-              <td><input name="unit" value="{{ unit }}" list="units-list" disabled></td>
-              <td><button type="button" onclick="removeRow(this)">🗑️</button></td>
-            </tr>
-            {% endfor %}            
-        </tbody>
-      </table>
-
-      <br>
-      <button type="button" onclick="addRow()">➕ Ajouter un ingrédient</button>
-      <br><br>
-      <button type="button" id="edit-button" onclick="enableEdit()">✏️ Modifier la recette</button>
-      <button type="submit" id="update-button" style="display: none;">✅ Mettre à jour</button>
-    </form>
-
-    <br>
-    <a href="/recipes">⬅️ Retour aux recettes</a>
 </body>
 </html>

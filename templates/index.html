@@ -1,108 +1,207 @@
-<datalist id="ingredients-list">
-    {% for ing in all_ingredients %}
-      <option value="{{ ing }}">
-    {% endfor %}
-</datalist>
-  
-  
-<datalist id="units-list">
-    <option value="kg">
-    <option value="gousses">
-    <option value="c. à s.">
-    <option value="mL">
-    <option value="g">
-    <option value="-">
-    <option value="c. à c.">
-    <option value="pincée">
-    <option value="L">
-    <option value="bouquet">
-    <option value="poignée">
-</datalist>
-  
-
-<html>
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-    <title>Recettes</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>📚 Liste des recettes</title>
+  <style>
+    :root {
+      --primary: #4caf50;
+      --secondary: #f0f0f0;
+      --text: #333;
+      --accent: #007bff;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #fafafa;
+      color: var(--text);
+      padding-bottom: 4rem;
+    }
+
+    nav {
+      background-color: var(--secondary);
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      border-bottom: 1px solid #ddd;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      background-color: var(--primary);
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      border-radius: var(--radius);
+      font-weight: 500;
+      transition: background-color 0.2s ease;
+    }
+
+    nav a:hover {
+      background-color: #3e8e41;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      background-color: white;
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-weight: 600;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 0.7rem;
+      margin: 0.3rem 0;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background-color: #3e8e41;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <nav style="background-color: #eee; padding: 10px;">
-        <a href="/" style="margin-right: 20px;">➕ Ajouter une recette</a>
-        <a href="/recipes" style="margin-right: 20px;">📚 Liste des recettes</a>
-        <a href="/shopping" style="margin-right: 20px;">🛒 Liste de courses</a>
-    </nav>
-    <hr>
-    <form action="/submit" method="POST">
-        <a href="/recipes"><button type="button">📖 Voir les recettes</button></a>
-        <label for="recipe">Nom de la recette :</label>
-        <input list="recipes" name="recipe" placeholder="Nom de la recette" required>
-        <datalist id="recipes">
-        {% for name in recipe_names %}
-            <option value="{{ name }}">
-        {% endfor %}
-        </datalist>
-    
-        <br><br>
-    
-        <table id="ingredient-table">
-            <thead>
-            <tr>
-                <th>Ingrédient</th>
-                <th>Quantité</th>
-                <th>Unité</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for i in range(10) %}
-            <tr>
-                <td><input name="ingredient" placeholder="Ingrédient" list="ingredients-list"></td>
-                <td><input name="quantity" type="number" placeholder="Quantité"></td>
-                <td><input name="unit" placeholder="Unité" list="units-list"></td>
-                <td><button type="button" onclick="removeRow(this)">🗑️</button></td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        
-        <!-- Input to choose number of rows to add -->
-        <label for="rowCount">Nombre de lignes à ajouter :</label>
-        <input id="rowCount" type="number" value="1" min="1" style="width: 50px;">
-        
-        <!-- Add Rows Button -->
-        <button type="button" onclick="addRows()">➕ Ajouter ingrédients</button>
-        
-        <br><br>
-        <button type="submit">📥 Enregistrer
-    </form>
-</body>
-</html>
+  <nav>
+    <a href="/">➕ Ajouter une recette</a>
+    <a href="/recipes">📚 Liste des recettes</a>
+    <a href="/shopping">🛒 Liste de courses</a>
+  </nav>
 
-  
+  <div class="container">
+    <h1>📋 Ajouter ou modifier une recette</h1>
+    <form action="/submit" method="POST">
+      <label for="recipe">Nom de la recette :</label>
+      <input list="recipes" name="recipe" placeholder="Nom de la recette" required>
+      <datalist id="recipes">
+        {% for name in recipe_names %}
+          <option value="{{ name }}">
+        {% endfor %}
+      </datalist>
+
+      <table id="ingredient-table">
+        <thead>
+          <tr>
+            <th>Ingrédient</th>
+            <th>Quantité</th>
+            <th>Unité</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in range(10) %}
+          <tr>
+            <td><input name="ingredient" placeholder="Ingrédient" list="ingredients-list"></td>
+            <td><input name="quantity" type="number" placeholder="Quantité"></td>
+            <td><input name="unit" placeholder="Unité" list="units-list"></td>
+            <td><button type="button" onclick="removeRow(this)">🗑️</button></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <label for="rowCount">Nombre de lignes à ajouter :</label>
+      <input id="rowCount" type="number" value="1" min="1" style="width: 60px;">
+
+      <button type="button" onclick="addRows()">➕ Ajouter ingrédients</button>
+      <br><br>
+      <button type="submit">📥 Enregistrer</button>
+    </form>
+
+    <datalist id="ingredients-list">
+      {% for ing in all_ingredients %}
+        <option value="{{ ing }}">
+      {% endfor %}
+    </datalist>
+
+    <datalist id="units-list">
+      <option value="kg">
+      <option value="gousses">
+      <option value="c. à s.">
+      <option value="mL">
+      <option value="g">
+      <option value="-">
+      <option value="c. à c.">
+      <option value="pincée">
+      <option value="L">
+      <option value="bouquet">
+      <option value="poignée">
+    </datalist>
+  </div>
+
   <script>
-    function addRow() {
+    function addRows() {
+      const rowCount = parseInt(document.getElementById('rowCount').value);
       const table = document.getElementById("ingredient-table").getElementsByTagName('tbody')[0];
-      const newRow = table.insertRow();
-      newRow.innerHTML = `
-        <td><input name="ingredient" placeholder="Ingrédient" list="ingredients-list"></td>
-        <td><input name="quantity" type="number" placeholder="Quantité"></td>
-        <td><input name="unit" placeholder="Unité" list="units-list"></td>
-        <td><button type="button" onclick="removeRow(this)">🗑️</button></td>
-      `;
+      for (let i = 0; i < rowCount; i++) {
+        const newRow = table.insertRow();
+        newRow.innerHTML = `
+          <td><input name="ingredient" placeholder="Ingrédient" list="ingredients-list"></td>
+          <td><input name="quantity" type="number" placeholder="Quantité"></td>
+          <td><input name="unit" placeholder="Unité" list="units-list"></td>
+          <td><button type="button" onclick="removeRow(this)">🗑️</button></td>
+        `;
+      }
     }
-    
+
     function removeRow(button) {
       const row = button.parentNode.parentNode;
       row.parentNode.removeChild(row);
     }
-
-    row.innerHTML = `
-        <td><input name="ingredient" placeholder="Ingrédient" list="ingredients-list"></td>
-        <td><input name="quantity" type="number" placeholder="Quantité"></td>
-        <td><input name="unit" placeholder="Unité" list="units-list"></td>
-        <td><button type="button" onclick="removeRow(this)">🗑️</button></td>
-        `;
-
-
-    </script>
-    
-    
+  </script>
+</body>
+</html>
