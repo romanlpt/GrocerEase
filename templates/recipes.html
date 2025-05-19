@@ -1,22 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Recettes</title>
+  <meta charset="UTF-8">
+  <title>📖 Recettes disponibles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root {
+      --primary: #4caf50;
+      --secondary: #f0f0f0;
+      --text: #333;
+      --accent: #007bff;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #fafafa;
+      color: var(--text);
+      padding-bottom: 4rem;
+    }
+
+    nav {
+      background-color: var(--secondary);
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      border-bottom: 1px solid #ddd;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      background-color: var(--primary);
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      border-radius: var(--radius);
+      font-weight: 500;
+      transition: background-color 0.2s ease;
+    }
+
+    nav a:hover {
+      background-color: #3e8e41;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin: 2rem 0 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    li {
+      margin: 0.5rem 0;
+      background-color: white;
+      padding: 1rem;
+      border-radius: var(--radius);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: transform 0.1s ease;
+    }
+
+    li:hover {
+      transform: scale(1.02);
+    }
+
+    li a {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <nav style="background-color: #eee; padding: 10px;">
-        <a href="/" style="margin-right: 20px;">➕ Ajouter une recette</a>
-        <a href="/recipes" style="margin-right: 20px;">📚 Liste des recettes</a>
-        <a href="/shopping" style="margin-right: 20px;">🛒 Liste de courses</a>
-    </nav>
-    <hr>
-      
-    <h1>📖 Recettes disponibles</h1>
-    <ul>
-        {% for name in recipe_names %}
-            <li><a href="{{ url_for('recipe_detail', name=name) }}">{{ name }}</a></li>
-        {% endfor %}
-    </ul>
-    <a href="/">⬅️ Retour à l'ajout</a>
+  <nav>
+    <a href="/">➕ Ajouter une recette</a>
+    <a href="/recipes">📚 Liste des recettes</a>
+    <a href="/shopping">🛒 Liste de courses</a>
+  </nav>
+
+  <h1>📖 Recettes disponibles</h1>
+
+  <ul>
+    {% for name in recipe_names %}
+      <li><a href="{{ url_for('recipe_detail', name=name) }}">{{ name }}</a></li>
+    {% endfor %}
+  </ul>
+
+  <a href="/" class="back-link">⬅️ Retour à l'ajout</a>
 </body>
 </html>
