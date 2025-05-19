@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recettes</title>
+</head>
+<body>
+    <nav style="background-color: #eee; padding: 10px;">
+        <a href="/" style="margin-right: 20px;">➕ Ajouter une recette</a>
+        <a href="/recipes" style="margin-right: 20px;">📚 Liste des recettes</a>
+        <a href="/shopping" style="margin-right: 20px;">🛒 Liste de courses</a>
+    </nav>
+    <hr>
+      
+    <h1>📖 Recettes disponibles</h1>
+    <ul>
+        {% for name in recipe_names %}
+            <li><a href="{{ url_for('recipe_detail', name=name) }}">{{ name }}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="/">⬅️ Retour à l'ajout</a>
+</body>
+</html>

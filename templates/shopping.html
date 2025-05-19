@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>🛒 Liste de courses</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    nav {
+      background-color: #eee;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 60%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    tr.checked {
+      background-color: #d4edda;
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    tr:hover {
+      cursor: pointer;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      padding: 0 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #5cb85c;
+      border: none;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #4cae4c;
+    }
+  </style>
+  <script>
+    function toggleRow(row) {
+      row.classList.toggle('checked');
+    }
+  </script>
+</head>
+<body>
+  <nav>
+    <a href="/">➕ Ajouter une recette</a>
+    <a href="/recipes" style="margin-left: 20px;">📚 Liste des recettes</a>
+    <a href="/shopping" style="margin-left: 20px;">🛒 Liste de courses</a>
+  </nav>
+
+  <div class="container">
+    <h1>🛒 Liste de courses</h1>
+
+    <form method="POST">
+      <label>Choisis les recettes :</label><br>
+      {% for recipe in recipes %}
+        <input type="checkbox" name="recipes" value="{{ recipe }}"> {{ recipe }}<br>
+      {% endfor %}
+      <br>
+      <button type="submit">🧾 Générer la liste</button>
+    </form>
+
+    {% if ingredients %}
+      <h2>Ingrédients nécessaires :</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Ingrédient</th>
+            <th>Quantité</th>
+            <th>Unité</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in ingredients %}
+            <tr onclick="toggleRow(this)">
+              <td>{{ item.ingredient }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unit }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p><i>Clique sur une ligne pour marquer l'ingrédient comme acheté ✅</i></p>
+    {% endif %}
+  </div>
+</body>
+</html>
