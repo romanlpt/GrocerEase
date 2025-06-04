@@ -1,5 +1,6 @@
 # app.py (Google Sheets version)
 
+import os
 import json
 from flask import Flask, render_template, request, redirect, url_for
 import gspread
@@ -15,7 +16,9 @@ app = Flask(__name__)
 
 def get_sheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
+
+    creds_dict = json.loads(os.environ['GOOGLE_CREDENTIALS_JSON'])
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     client = gspread.authorize(creds)
     sheet = client.open_by_key(SHEET_ID).sheet1
     return sheet
